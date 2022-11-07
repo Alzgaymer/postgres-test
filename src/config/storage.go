@@ -8,7 +8,7 @@ var cfg ConfigPostgres = ConfigPostgres{
 	Username: "postgres",
 	Password: "postgrespw",
 	Host:     "localhost",
-	Port:     "49153",
+	Port:     "49155",
 	Database: "postgres",
 }
 

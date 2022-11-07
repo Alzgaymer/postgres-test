@@ -30,4 +30,13 @@ func main() {
 	for _, v := range u {
 		fmt.Printf("%v\n", v)
 	}
+
+	for _, v := range u {
+		newUser, err := r.FindOne(context.TODO(), v.ID)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Searched fo user with: %v. Result: %v\n", v.ID, newUser)
+		break
+	}
 }

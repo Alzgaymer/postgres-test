@@ -22,7 +22,7 @@ func formatQuery(q string) string {
 type Repository interface {
 	Create(ctx context.Context, user customuser.CustomUser) error
 	FindAll(ctx context.Context) (u []customuser.CustomUser, err error)
-	FindOne(ctx context.Context, user customuser.CustomUser) (string, error)
+	FindOne(ctx context.Context, id string) (customuser.CustomUser, error)
 	Update(ctx context.Context, user customuser.CustomUser) (string, error)
 	Delete(ctx context.Context, user customuser.CustomUser) (string, error)
 }
@@ -74,8 +74,18 @@ func (r *repository) FindAll(ctx context.Context) (u []customuser.CustomUser, er
 	}
 	return users, nil
 }
-func (r *repository) FindOne(ctx context.Context, user customuser.CustomUser) (string, error) {
-	panic("implement me")
+func (r *repository) FindOne(ctx context.Context, id string) (customuser.CustomUser, error) {
+	querry := `
+	SELECT id, name, age FROM public.custom_user where id = $1 
+	`
+	q := formatQuery(querry)
+	var newUser customuser.CustomUser
+	err := r.client.QueryRow(ctx, q, id).Scan(&newUser.ID, &newUser.Name, &newUser.Age)
+	if err != nil {
+		return customuser.CustomUser{}, err
+	}
+
+	return newUser, nil
 }
 func (r *repository) Update(ctx context.Context, user customuser.CustomUser) (string, error) {
 	panic("implement me")
