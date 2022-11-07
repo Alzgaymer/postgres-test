@@ -1,4 +1,4 @@
-package db
+package customuser
 
 import (
 	"context"
@@ -29,12 +29,12 @@ type Repository interface {
 
 func (r *repository) Create(ctx context.Context, user customuser.CustomUser) error {
 
-	querry := `insert into custom_user(name,age)
-			   values($1)
+	querry := `	insert into custom_user(name,age)
+			   	values($1,$2)
 				returning id
 	`
 	q := formatQuery(querry)
-	if err := r.client.QueryRow(ctx, q, user.Name).Scan(&user.ID); err != nil {
+	if err := r.client.QueryRow(ctx, q, user.Name, user.Age).Scan(&user.ID); err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			pgErr = err.(*pgconn.PgError)
@@ -50,7 +50,7 @@ func (r *repository) Create(ctx context.Context, user customuser.CustomUser) err
 func (r *repository) FindAll(ctx context.Context) (u []customuser.CustomUser, err error) {
 
 	querry := `
-	SELECT id, name, age FROM public.custom_user
+			SELECT id, name, age FROM public.custom_user
 	`
 	q := formatQuery(querry)
 	rows, err := r.client.Query(ctx, q)

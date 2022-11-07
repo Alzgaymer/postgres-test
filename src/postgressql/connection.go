@@ -18,7 +18,8 @@ type Client interface {
 	Begin(ctx context.Context) (pgx.Tx, error)
 }
 
-func New(ctx context.Context, maxAttempts int, cfg config.ConfigPostgres) (pool *pgxpool.Pool, err error) {
+func New(ctx context.Context, maxAttempts int) (pool *pgxpool.Pool, err error) {
+	cfg := config.GetPostgersConfig()
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 
 	doWithAttempts(func() error {
