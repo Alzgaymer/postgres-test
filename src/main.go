@@ -20,6 +20,6 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, v := range u {
-		fmt.Printf("%v", v)
+		fmt.Printf("%v\n", v)
 	}
 }
