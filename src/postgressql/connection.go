@@ -3,6 +3,7 @@ package postgressql
 import (
 	"context"
 	"fmt"
+	"test-postgres/config"
 	"time"
 
 	"github.com/jackc/pgconn"
@@ -17,8 +18,8 @@ type Client interface {
 	Begin(ctx context.Context) (pgx.Tx, error)
 }
 
-func New(ctx context.Context, maxAttempts int, username, password, host, port, database string) (pool *pgxpool.Pool, err error) {
-	dsn := fmt.Sprintf("postgressql://%s:%s@%s:%s/%s", username, password, host, port, database)
+func New(ctx context.Context, maxAttempts int, cfg config.ConfigPostgres) (pool *pgxpool.Pool, err error) {
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 
 	doWithAttempts(func() error {
 		ctx, cf := context.WithTimeout(ctx, 5*time.Second)
@@ -29,7 +30,7 @@ func New(ctx context.Context, maxAttempts int, username, password, host, port, d
 			return err
 		}
 		return nil
-	}, 5, 5*time.Second)
+	}, 5, 1*time.Second)
 
 	return
 }
